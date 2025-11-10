@@ -280,7 +280,7 @@ header h1 {
   padding: 1rem;
   max-width: 1400px;
   margin: 0 auto;
-  padding-bottom: 80px;
+  padding-bottom: 100px; /* Increased padding to account for footer */
 }
 
 /* Batch Actions */
@@ -383,6 +383,7 @@ header h1 {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: var(--gap);
+  padding-bottom: 1rem; /* Ensure last row isn't cut off by footer */
 }
 
 .album-card {
@@ -577,6 +578,7 @@ header h1 {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   gap: var(--gap);
+  padding-bottom: 1rem; /* Ensure last row isn't cut off by footer */
 }
 
 /* Adjust grid for smaller screens */
@@ -945,10 +947,12 @@ select:focus-visible {
   
   #albums-list {
     grid-template-columns: 1fr;
+    padding-bottom: 0.5rem; /* Adjust padding for smaller screens */
   }
   
   #photos-grid {
     grid-template-columns: repeat(2, 1fr);
+    padding-bottom: 0.5rem; /* Adjust padding for smaller screens */
   }
   
   .quick-actions {
