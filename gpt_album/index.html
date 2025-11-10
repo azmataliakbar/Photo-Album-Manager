@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>📸 Photo Album Manager</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-left">
+      <h1>📸 Photo Album Manager</h1>
+    </div>
+
+    <div class="header-middle">
+      <input id="searchInput" placeholder="🔍 Search albums by title or date..." />
+      <button id="searchBtn">Search</button>
+    </div>
+
+    <div class="header-right">
+      <label class="btn" title="Import">
+        📁 Import
+        <input id="importInput" type="file" multiple accept="image/*" style="display:none" />
+      </label>
+      <button id="exportBtn" class="btn">💾 Export</button>
+      <button id="newAlbumBtn" class="btn">➕ New Album</button>
+      <button id="resetBtn" class="btn danger">🗑️ Reset Data</button>
+    </div>
+  </header>
+
+  <main class="main">
+    <section class="controls-row">
+      <div id="albumsCount" class="albums-count">Albums: 0</div>
+      <div id="imagesCount" class="images-count">Total images: 0</div>
+    </section>
+
+    <section id="albumsContainer" class="albums-container" aria-label="Albums">
+      <!-- Albums are injected here -->
+    </section>
+
+    <section id="photosView" class="photos-view hidden">
+      <div class="photos-view-header">
+        <button id="backBtn" class="btn">⬅ Back</button>
+        <h2 id="photosTitle">Album</h2>
+        <div id="albumActions"></div>
+      </div>
+      <div id="photosGrid" class="photos-grid"></div>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    © GIAIC, Created By: Azmat Ali
+  </footer>
+
+  <!-- TypeScript will be compiled to JavaScript. For quick use, you can compile script.ts to script.js and include that instead -->
+  <script src="script.ts" type="module"></script>
+</body>
+</html>

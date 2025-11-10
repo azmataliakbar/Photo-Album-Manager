@@ -1,0 +1,117 @@
+:root{
+  --bg:#0f172a; /* dark navy */
+  --card:#0b1220;
+  --accent:#06b6d4; /* cyan */
+  --muted:#94a3b8;
+  --glass: rgba(255,255,255,0.03);
+  --accent-2:#7c3aed; /* purple */
+  --success:#10b981;
+  --danger:#ef4444;
+  --text:#e6eef8;
+  --soft-shadow: 0 6px 18px rgba(2,6,23,0.6);
+  --glass-border: rgba(255,255,255,0.04);
+}
+
+/* Reset & base */
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;}
+body{
+  background: linear-gradient(180deg, #071024 0%, #071a2a 100%);
+  color:var(--text);
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  padding-bottom:80px;
+}
+
+/* Header */
+.app-header{
+  display:flex;
+  gap:12px;
+  align-items:center;
+  justify-content:space-between;
+  padding:14px;
+  background: linear-gradient(90deg, rgba(12,18,35,0.9), rgba(10,12,25,0.8));
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+  position:sticky;
+  top:0;
+  z-index:10;
+  box-shadow: var(--soft-shadow);
+}
+.app-header h1{
+  margin:0;font-size:18px;letter-spacing:0.2px;
+  color:var(--accent);
+}
+.header-middle{flex:1;display:flex;justify-content:center;gap:8px;align-items:center}
+.header-middle input{
+  width:100%;
+  max-width:520px;
+  padding:10px 12px;border-radius:10px;border:1px solid var(--glass-border);
+  background:var(--glass);color:var(--text);outline:none;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.02);
+}
+.header-middle button{padding:9px 12px;border-radius:10px;border:none;background:transparent;color:var(--muted);cursor:pointer}
+.header-right{display:flex;gap:8px;align-items:center}
+.btn{
+  background:linear-gradient(180deg,var(--card), rgba(14,20,36,0.6));
+  border:1px solid var(--glass-border);
+  padding:10px 12px;border-radius:10px;color:var(--text);cursor:pointer;box-shadow:var(--soft-shadow);
+}
+.btn:hover{transform:translateY(-2px)}
+.btn.danger{background:linear-gradient(180deg,#2b0b0b,#1b0606);border-color:rgba(255,255,255,0.03)}
+.btn input{display:none}
+
+/* Main layout */
+.main{max-width:1100px;margin:18px auto;padding:0 12px}
+.controls-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;color:var(--muted)}
+.albums-container{
+  display:grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap:18px;
+  margin-top:10px;
+}
+
+/* Album Card */
+.album-card{
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  border:1px solid var(--glass-border);
+  padding:14px;border-radius:14px;box-shadow: var(--soft-shadow);
+  display:flex;flex-direction:column;gap:10px;cursor:grab;
+}
+.album-card.dragging{opacity:0.7;transform:scale(0.98);cursor:grabbing}
+.album-cover{
+  height:140px;border-radius:10px;overflow:hidden;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--accent),var(--accent-2));
+  position:relative;
+}
+.album-cover img{width:100%;height:100%;object-fit:cover;display:block}
+.album-info{display:flex;justify-content:space-between;align-items:center}
+.album-title{font-weight:600}
+.album-meta{font-size:12px;color:var(--muted)}
+.album-footer{display:flex;justify-content:space-between;align-items:center;padding-top:6px;border-top:1px solid rgba(255,255,255,0.02)}
+.album-actions{display:flex;gap:8px}
+.small-btn{background:transparent;border:1px solid rgba(255,255,255,0.03);padding:6px;border-radius:8px;cursor:pointer}
+
+/* Photos View */
+.photos-view{margin-top:18px}
+.photos-view.hidden{display:none}
+.photos-view-header{display:flex;align-items:center;gap:12px;padding:10px 0}
+.photos-grid{
+  display:grid;grid-template-columns: repeat(auto-fit,minmax(120px,1fr));gap:10px;
+  margin-top:12px;
+}
+.photo-tile{background:var(--glass);padding:6px;border-radius:10px;overflow:hidden;border:1px solid rgba(255,255,255,0.02);display:flex;flex-direction:column;gap:8px;align-items:center}
+.photo-tile img{width:100%;height:110px;object-fit:cover;border-radius:8px}
+.photo-actions{display:flex;gap:6px;width:100%;justify-content:space-between}
+
+/* Footer */
+.app-footer{
+  position:fixed;bottom:0;left:0;right:0;padding:12px 16px;background:linear-gradient(90deg, rgba(12,18,35,0.95), rgba(10,12,25,0.95));text-align:center;color:var(--muted);
+  border-top:1px solid rgba(255,255,255,0.02);
+}
+
+/* Responsive tweaks */
+@media (max-width:480px){
+  .header-middle{display:none}
+  .album-cover{height:120px}
+  .app-header h1{font-size:16px}
+  .albums-container{gap:12px}
+}
