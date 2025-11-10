@@ -5,6 +5,8 @@ class PhotoAlbumApp {
     private dbManager: DatabaseManager;
     private albumManager: AlbumManager;
     private currentView: 'albums' | 'album-detail' = 'albums';
+    private currentAlbumId: string | null = null;
+    private selectedPhotos: Set<{ path: string; caption: string }> = new Set();
 
     constructor() {
         this.dbManager = new DatabaseManager();
@@ -136,6 +138,9 @@ class PhotoAlbumApp {
 
         if (!container || !albumsContainer || !albumViewer) return;
 
+        // Update view state
+        this.currentView = 'albums';
+
         // Hide viewer, show albums container
         albumViewer.classList.add('hidden');
         albumsContainer.classList.remove('hidden');
@@ -224,13 +229,44 @@ class PhotoAlbumApp {
 
             // Render photos
             photosGrid.innerHTML = album.photos.map((photo: any) => `
-                <div class="photo-tile">
+                <div class="photo-tile selectable-photo">
                     <img src="${photo.path}" alt="${this.escapeHtml(photo.caption) || 'Photo'}">
                     <div class="photo-overlay">
                         <div class="photo-caption">${this.escapeHtml(photo.caption) || ''}</div>
+                        <div class="photo-selector">
+                            <input type="checkbox" class="photo-checkbox" data-path="${photo.path}">
+                        </div>
                     </div>
                 </div>
             `).join('');
+
+            // Add event listeners for photo selection
+            const photoCheckboxes = photosGrid.querySelectorAll('.photo-checkbox');
+            photoCheckboxes.forEach((checkbox: Element) => {
+                const inputCheckbox = checkbox as HTMLInputElement;
+                inputCheckbox.addEventListener('change', (e) => {
+                    const target = e.target as HTMLInputElement;
+                    const photoPath = target.dataset.path;
+                    
+                    if (target.checked) {
+                        // Add photo to selection
+                        const photo = album.photos.find((p: any) => p.path === photoPath);
+                        if (photo) {
+                            this.selectedPhotos.add({ path: photo.path, caption: photo.caption });
+                        }
+                    } else {
+                        // Remove photo from selection
+                        this.selectedPhotos.delete({ path: photoPath, caption: "" } as any); // Cast to override type for comparison
+                    }
+                    
+                    // Update UI based on selection count
+                    this.updatePhotoSelectionUI();
+                });
+            });
+
+            // Update view state
+            this.currentView = 'album-detail';
+            this.currentAlbumId = albumId;
 
             // Switch views
             albumsContainer.classList.add('hidden');
@@ -257,6 +293,10 @@ class PhotoAlbumApp {
             albumViewer.classList.add('hidden');
             albumsContainer.classList.remove('hidden');
         }
+
+        // Update view state
+        this.currentView = 'albums';
+        this.currentAlbumId = null;
 
         // Hide breadcrumb
         if (breadcrumb) {
@@ -358,6 +398,22 @@ class PhotoAlbumApp {
         } catch {
             return dateString;
         }
+    }
+
+    updatePhotoSelectionUI() {
+        // This method can be expanded to update UI based on selection count
+        const selectionCount = this.selectedPhotos.size;
+        
+        // For now, just log the selection count
+        console.log(`Selected photos: ${selectionCount}`);
+    }
+
+    getCurrentView(): 'albums' | 'album-detail' {
+        return this.currentView;
+    }
+
+    getCurrentAlbumId(): string | null {
+        return this.currentAlbumId;
     }
 }
 

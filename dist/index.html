@@ -1,0 +1,2111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Photo Album Manager</title>
+  <link rel="stylesheet" crossorigin href="/assets/index-C-YaFzUi.css">
+</head>
+<body>
+  <div class="upload-progress hidden">
+    <div class="progress-bar"></div>
+  </div>
+
+  <header>
+    <div class="header-content">
+      <div class="logo-section">
+        <div class="logo">📸</div>
+        <h1>Photo Album Manager</h1>
+      </div>
+      
+      <div class="search-section">
+        <div class="search-box">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="searchInput" placeholder="Search albums by title or date...">
+          <button id="searchBtn" class="btn-primary">Search</button>
+        </div>
+      </div>
+      
+      <div class="action-buttons">
+        <button id="importBtn" class="btn-secondary" title="Import album data in JSON format only">
+          <span class="btn-icon">📁</span>
+          <span class="btn-text">Import</span>
+          <small class="btn-subtitle">JSON</small>
+        </button>
+        <button id="exportBtn" class="btn-secondary" title="Export album data in JSON format only">
+          <span class="btn-icon">💾</span>
+          <span class="btn-text">Export</span>
+          <small class="btn-subtitle">JSON</small>
+        </button>
+        <button id="createAlbumBtn" class="btn-primary">
+          <span class="btn-icon">➕</span>
+          New Album
+        </button>
+        <button id="scanAssetsBtn" class="btn-secondary">
+          <span class="btn-icon">🔄</span>
+          Scan Assets
+        </button>
+        <button id="organizeImagesBtn" class="btn-primary">
+          <span class="btn-icon">📂</span>
+          Organize Images
+        </button>
+        <button id="resetDataBtn" class="btn-danger">
+          <span class="btn-icon">🗑️</span>
+          Reset Data
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <nav class="breadcrumb hidden">
+    <a href="#" class="breadcrumb-item" id="breadcrumb-home">All Albums</a>
+    <span class="breadcrumb-separator">/</span>
+    <span class="breadcrumb-item current" id="breadcrumb-current"></span>
+  </nav>
+
+  <main class="main-content">
+    <!-- Albums Container (Default View) -->
+    <section id="albums-container">
+      <div id="albums-list">
+        <!-- Albums will be dynamically loaded here -->
+        <div class="empty-state" id="emptyState">
+          <div class="empty-icon">📸</div>
+          <h3>No albums yet</h3>
+          <p>Create your first album to get started</p>
+          <button class="btn-primary" id="createFirstAlbum">
+            Create Your First Album
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Album Viewer (Hidden by default) -->
+    <section id="album-viewer" class="hidden">
+      <div class="viewer-header">
+        <div class="header-top-row">
+          <button id="backToAlbums" class="btn-secondary">
+            <span class="btn-icon">←</span>
+            <span class="btn-text">Back</span>
+          </button>
+          <h2 id="current-album-title">Album Title</h2>
+        </div>
+        <div class="viewer-actions">
+          <button id="addPhotosBtn" class="btn-primary">
+            <span class="btn-icon">➕</span>
+            <span class="btn-text">Add</span>
+          </button>
+          <button id="uploadPhotosBtn" class="btn-primary">
+            <span class="btn-icon">📁</span>
+            <span class="btn-text">Upload</span>
+          </button>
+          <button id="importFolderBtn" class="btn-primary">
+            <span class="btn-icon">📂</span>
+            <span class="btn-text">Import</span>
+          </button>
+          <button id="selectPhotosBtn" class="btn-secondary">
+            <span class="btn-icon">☑️</span>
+            <span class="btn-text">Select</span>
+          </button>
+          <button id="downloadPhotosBtn" class="btn-secondary">
+            <span class="btn-icon">⬇️</span>
+            <span class="btn-text">Download</span>
+          </button>
+          <button id="deletePhotosBtn" class="btn-danger">
+            <span class="btn-icon">🗑️</span>
+            <span class="btn-text">Delete</span>
+          </button>
+        </div>
+      </div>
+
+      <div id="photos-grid">
+        <!-- Photos will be dynamically loaded here -->
+      </div>
+    </section>
+
+    <!-- Add Photos Modal -->
+    <div id="addPhotosModal" class="modal hidden">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>Add Photos to Album</h3>
+          <button id="closeModal" class="btn-close">&times;</button>
+        </div>
+        <div class="modal-body">
+          <!-- Upload area with drag & drop -->
+          <div class="upload-section">
+            <div id="dropZone" class="drop-zone">
+              <div class="drop-zone-content">
+                <h4>📁 Upload Images</h4>
+                <p>Drag & drop images here or click to browse</p>
+                <button id="browseFiles" class="btn-primary">Browse Files</button>
+                <label for="fileInput" class="visually-hidden">Select images to upload</label>
+                <input type="file" id="fileInput" accept="image/*" multiple class="hidden">
+              </div>
+            </div>
+          </div>
+          
+          <div class="available-photos">
+            <h4>Available Photos from Assets Folder</h4>
+            <div id="available-photos-list" class="photos-grid-mini">
+              <!-- Available photos will be listed here -->
+            </div>
+          </div>
+          <div class="add-custom-photo">
+            <h4>Add Custom Photo</h4>
+            <div class="custom-photo-input">
+              <input type="text" id="customPhotoUrl" placeholder="Enter image URL or local path">
+              <input type="text" id="customPhotoCaption" placeholder="Enter caption (optional)">
+              <button id="addCustomPhoto" class="btn-primary">Add Custom Photo</button>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button id="cancelAddPhotos" class="btn-secondary">Cancel</button>
+          <button id="confirmAddPhotos" class="btn-primary">Add Selected Photos</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <label for="importFile" class="visually-hidden">
+    Select file to import albums
+  </label>
+  <input type="file" id="importFile" accept=".json,.zip" class="hidden">
+  
+  <label for="directImageImport" class="visually-hidden">
+    Select image files to import directly
+  </label>
+  <input type="file" id="directImageImport" accept=".jpg,.jpeg,.png,.gif,.webp,.bmp" multiple class="hidden">
+
+  <footer>
+    &copy; GIAIC, Created By: Azmat Ali
+  </footer>
+
+  <script>
+    // Database Manager Class
+    class DatabaseManager {
+        constructor() {
+            this.db = null;
+            this.SQL = null;
+            this.useFallback = false;
+        }
+
+        async init() {
+            try {
+                // Load SQL.js from CDN
+                await this.loadScript('https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/sql-wasm.js');
+                
+                // Wait for initSqlJs to be available
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                
+                this.SQL = await initSqlJs({
+                    locateFile: file => `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/${file}`
+                });
+                
+                this.db = new this.SQL.Database();
+                
+                // Create tables
+                this.db.run(`
+                    CREATE TABLE IF NOT EXISTS albums (
+                        id TEXT PRIMARY KEY, 
+                        title TEXT, 
+                        date TEXT,
+                        description TEXT,
+                        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+                    );
+                    CREATE TABLE IF NOT EXISTS photos (
+                        id TEXT PRIMARY KEY, 
+                        album_id TEXT, 
+                        path TEXT, 
+                        caption TEXT,
+                        file_name TEXT,
+                        added_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                        FOREIGN KEY (album_id) REFERENCES albums(id)
+                    );
+                    CREATE TABLE IF NOT EXISTS app_state (
+                        key TEXT PRIMARY KEY,
+                        value TEXT
+                    );
+                `);
+                
+                console.log('Database initialized successfully');
+            } catch (error) {
+                console.error('Database initialization failed, using localStorage fallback:', error);
+                this.useFallback = true;
+                this.initFallback();
+            }
+        }
+
+        loadScript(src) {
+            return new Promise((resolve, reject) => {
+                if (document.querySelector(`script[src="${src}"]`)) {
+                    resolve();
+                    return;
+                }
+                const script = document.createElement('script');
+                script.src = src;
+                script.onload = resolve;
+                script.onerror = reject;
+                document.head.appendChild(script);
+            });
+        }
+
+        initFallback() {
+            console.log('Using localStorage fallback');
+            if (!localStorage.getItem('albums')) {
+                localStorage.setItem('albums', JSON.stringify([]));
+            }
+            if (!localStorage.getItem('photos')) {
+                localStorage.setItem('photos', JSON.stringify([]));
+            }
+            if (!localStorage.getItem('app_state')) {
+                localStorage.setItem('app_state', JSON.stringify({}));
+            }
+        }
+
+        async run(sql, params = []) {
+            if (this.useFallback) {
+                return this.fallbackRun(sql, params);
+            }
+            if (!this.db) throw new Error('Database not initialized');
+            this.db.run(sql, params);
+        }
+
+        async get(sql, params = []) {
+            if (this.useFallback) {
+                return this.fallbackGet(sql, params);
+            }
+            if (!this.db) throw new Error('Database not initialized');
+            const stmt = this.db.prepare(sql);
+            try {
+                stmt.bind(params);
+                return stmt.step() ? stmt.getAsObject() : null;
+            } finally {
+                stmt.free();
+            }
+        }
+
+        async all(sql, params = []) {
+            if (this.useFallback) {
+                return this.fallbackAll(sql, params);
+            }
+            if (!this.db) throw new Error('Database not initialized');
+            const stmt = this.db.prepare(sql);
+            try {
+                stmt.bind(params);
+                const results = [];
+                while (stmt.step()) {
+                    results.push(stmt.getAsObject());
+                }
+                return results;
+            } finally {
+                stmt.free();
+            }
+        }
+
+        // Fallback methods using localStorage
+        fallbackRun(sql, params) {
+            // Handle INSERT operations
+            if (sql.includes('INSERT INTO albums')) {
+                const albums = JSON.parse(localStorage.getItem('albums') || '[]');
+                const newAlbum = {
+                    id: params[0],
+                    title: params[1],
+                    date: params[2],
+                    description: params[3] || '',
+                    created_at: new Date().toISOString()
+                };
+                albums.push(newAlbum);
+                localStorage.setItem('albums', JSON.stringify(albums));
+            }
+            else if (sql.includes('INSERT INTO photos')) {
+                const photos = JSON.parse(localStorage.getItem('photos') || '[]');
+                const newPhoto = {
+                    id: params[0],
+                    album_id: params[1],
+                    path: params[2],
+                    caption: params[3] || '',
+                    file_name: this.extractFileName(params[2]),
+                    added_at: new Date().toISOString()
+                };
+                photos.push(newPhoto);
+                localStorage.setItem('photos', JSON.stringify(photos));
+            }
+            else if (sql.includes('DELETE FROM')) {
+                if (sql.includes('photos')) {
+                    localStorage.setItem('photos', JSON.stringify([]));
+                }
+                if (sql.includes('albums')) {
+                    localStorage.setItem('albums', JSON.stringify([]));
+                }
+            }
+        }
+
+        extractFileName(path) {
+            return path.split('/').pop() || path;
+        }
+
+        fallbackGet(sql, params) {
+            if (sql.includes('SELECT * FROM albums WHERE id = ?')) {
+                const albums = JSON.parse(localStorage.getItem('albums') || '[]');
+                return albums.find(album => album.id === params[0]) || null;
+            }
+            return null;
+        }
+
+        fallbackAll(sql, params) {
+            if (sql.includes('SELECT * FROM albums')) {
+                return JSON.parse(localStorage.getItem('albums') || '[]');
+            }
+            if (sql.includes('SELECT * FROM photos WHERE album_id = ?')) {
+                const photos = JSON.parse(localStorage.getItem('photos') || '[]');
+                return photos.filter(photo => photo.album_id === params[0]);
+            }
+            if (sql.includes('title LIKE ? OR date LIKE ?')) {
+                const albums = JSON.parse(localStorage.getItem('albums') || '[]');
+                const query = params[0].replace(/%/g, '').toLowerCase();
+                return albums.filter(album => 
+                    album.title.toLowerCase().includes(query) || 
+                    album.date.toLowerCase().includes(query)
+                );
+            }
+            if (sql.includes('SELECT path FROM photos')) {
+                const photos = JSON.parse(localStorage.getItem('photos') || '[]');
+                return photos.map(photo => ({ path: photo.path }));
+            }
+            return [];
+        }
+
+        async setAppState(key, value) {
+            if (this.useFallback) {
+                const state = JSON.parse(localStorage.getItem('app_state') || '{}');
+                state[key] = value;
+                localStorage.setItem('app_state', JSON.stringify(state));
+            } else {
+                await this.run(
+                    'INSERT OR REPLACE INTO app_state (key, value) VALUES (?, ?)',
+                    [key, value]
+                );
+            }
+        }
+
+        async getAppState(key) {
+            if (this.useFallback) {
+                const state = JSON.parse(localStorage.getItem('app_state') || '{}');
+                return state[key] || null;
+            } else {
+                const result = await this.get(
+                    'SELECT value FROM app_state WHERE key = ?',
+                    [key]
+                );
+                return result ? result.value : null;
+            }
+        }
+    }
+
+    // Album Manager Class
+    class AlbumManager {
+        constructor(dbManager) {
+            this.dbManager = dbManager;
+        }
+
+        async createAlbum(title, date, description = '') {
+            const id = 'album_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+            
+            if (this.dbManager.useFallback) {
+                const albums = JSON.parse(localStorage.getItem('albums') || '[]');
+                albums.push({ 
+                    id, 
+                    title, 
+                    date, 
+                    description,
+                    created_at: new Date().toISOString()
+                });
+                localStorage.setItem('albums', JSON.stringify(albums));
+            } else {
+                await this.dbManager.run(
+                    `INSERT INTO albums (id, title, date, description) VALUES (?, ?, ?, ?)`,
+                    [id, title, date, description]
+                );
+            }
+            return id;
+        }
+
+        async addPhotoToAlbum(albumId, path, caption = '') {
+            const id = 'photo_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+            const fileName = path.split('/').pop() || path;
+            
+            if (this.dbManager.useFallback) {
+                const photos = JSON.parse(localStorage.getItem('photos') || '[]');
+                photos.push({ 
+                    id, 
+                    album_id: albumId, 
+                    path, 
+                    caption,
+                    file_name: fileName,
+                    added_at: new Date().toISOString()
+                });
+                localStorage.setItem('photos', JSON.stringify(photos));
+            } else {
+                await this.dbManager.run(
+                    `INSERT INTO photos (id, album_id, path, caption, file_name) VALUES (?, ?, ?, ?, ?)`,
+                    [id, albumId, path, caption, fileName]
+                );
+            }
+        }
+
+        async getAlbums() {
+            return await this.dbManager.all(`SELECT * FROM albums ORDER BY created_at DESC`);
+        }
+
+        async getAlbumById(id) {
+            const album = await this.dbManager.get(`SELECT * FROM albums WHERE id = ?`, [id]);
+            if (!album) return null;
+            
+            const photos = await this.dbManager.all(
+                `SELECT * FROM photos WHERE album_id = ? ORDER BY added_at DESC`, 
+                [id]
+            );
+            
+            return { ...album, photos };
+        }
+
+        async searchAlbums(query) {
+            if (!query.trim()) {
+                return this.getAlbums();
+            }
+            
+            const searchQuery = `%${query}%`;
+            return await this.dbManager.all(
+                `SELECT * FROM albums 
+                 WHERE title LIKE ? OR date LIKE ? OR description LIKE ?
+                 ORDER BY created_at DESC`,
+                [searchQuery, searchQuery, searchQuery]
+            );
+        }
+
+        async getAllPhotoPaths() {
+            return await this.dbManager.all(`SELECT path FROM photos`);
+        }
+
+        async photoExists(path) {
+            const photos = await this.dbManager.all(`SELECT path FROM photos WHERE path = ?`, [path]);
+            return photos.length > 0;
+        }
+
+        async getAutoAlbum() {
+            // Get or create the "Auto-Detected Photos" album
+            let autoAlbum = await this.dbManager.get(
+                `SELECT * FROM albums WHERE title = 'Auto-Detected Photos'`
+            );
+            
+            if (!autoAlbum) {
+                const albumId = await this.createAlbum(
+                    'Auto-Detected Photos',
+                    new Date().toISOString().split('T')[0],
+                    'Photos automatically detected from assets folder'
+                );
+                autoAlbum = await this.getAlbumById(albumId);
+            }
+            
+            return autoAlbum;
+        }
+
+        async getAlbumByTitle(title) {
+            const albums = await this.dbManager.all(`SELECT * FROM albums WHERE title = ?`, [title]);
+            return albums.length > 0 ? albums[0] : null;
+        }
+    }
+
+    // Asset Scanner Class
+    class AssetScanner {
+        constructor(albumManager) {
+            this.albumManager = albumManager;
+        }
+
+        async scanAssetsFolder() {
+            console.log('Scanning assets folder for new images...');
+            const autoAlbum = await this.albumManager.getAutoAlbum();
+            const existingPhotos = await this.albumManager.getAllPhotoPaths();
+            const existingPaths = new Set(existingPhotos.map(p => p.path));
+            
+            // Dynamically look for images in the assets folder
+            // We'll try common image extensions
+            const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp', '.svg'];
+            let newPhotosAdded = 0;
+            
+            // Attempt to scan the assets folder by trying common filenames
+            // This is a workaround since JavaScript in browsers cannot directly list directory contents
+            // We'll use a more extensive list based on common naming patterns
+            const potentialImageNames = await this.discoverImageFiles();
+            
+            for (const imageFile of potentialImageNames) {
+                const imagePath = `./assets/${imageFile}`;
+                
+                // Check if this image already exists in database
+                if (!existingPaths.has(imagePath)) {
+                    // Check if the image actually exists by trying to load it
+                    const imageExists = await this.checkImageExists(imagePath);
+                    
+                    if (imageExists) {
+                        // Add to auto album with a descriptive caption
+                        const caption = this.generateCaption(imageFile);
+                        await this.albumManager.addPhotoToAlbum(autoAlbum.id, imagePath, caption);
+                        console.log(`Added new photo: ${imageFile}`);
+                        newPhotosAdded++;
+                    }
+                }
+            }
+            
+            return newPhotosAdded;
+        }
+
+        // Method to dynamically discover image files in assets folder
+        async discoverImageFiles() {
+            // This method will attempt to discover image files by using a more targeted approach
+            // Since we can't directly list directory contents in browser JavaScript,
+            // we'll implement a more intelligent approach based on common patterns
+            
+            // First, use the predefined list of known images
+            const knownImages = [
+                'cat1.jpg', 'cat2.jpg', 'cat3.jpg', 'cat4.jpeg', 'cat5.jpeg',
+                'flower1.jpeg', 'flower2.jpeg', 'flower3.jpeg', 'flower4.jpeg',
+                'nature1.jpeg', 'nature2.jpeg', 'nature3.jpeg',
+                'urban1.jpeg', 'urban2.jpeg', 'urban3.jpeg','garden1.jpeg', 'garden2.jpeg', 'garden3.jpeg',
+                'jinnah1.jpeg', 'iqbal1.jpeg', 'liaqat1.jpg', 'kamran1.jpeg'
+            ];
+            
+            // Then try a few common patterns with numbers
+            const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp'];
+            const commonPatterns = ['img', 'photo', 'pic', 'image', 'snapshot'];
+            
+            // Create a combined list
+            const potentialNames = [...knownImages];
+            
+            // Add numbered patterns (limited to reduce requests)
+            for (const pattern of commonPatterns) {
+                for (let i = 1; i <= 20; i++) { // Reduced to 20 to limit requests
+                    for (const ext of imageExtensions) {
+                        potentialNames.push(`${pattern}${i}${ext}`);
+                    }
+                }
+            }
+            
+            // Verify which files actually exist
+            const existingFiles = [];
+            for (const name of potentialNames) {
+                if (await this.checkImageExists(`./assets/${name}`)) {
+                    // Avoid duplicates
+                    if (!existingFiles.includes(name)) {
+                        existingFiles.push(name);
+                    }
+                }
+            }
+            
+            return existingFiles;
+        }
+
+        async checkImageExists(url) {
+            return new Promise((resolve) => {
+                const img = new Image();
+                img.onload = () => resolve(true);
+                img.onerror = () => resolve(false);
+                img.src = url;
+                // Timeout after 2 seconds
+                setTimeout(() => resolve(false), 2000);
+            });
+        }
+
+        generateCaption(fileName) {
+            const nameWithoutExt = fileName.replace(/\.[^/.]+$/, "");
+            const words = nameWithoutExt.split(/(?=[A-Z])|_/).filter(word => word.length > 0);
+            
+            if (words.length === 0) return 'Photo';
+            
+            // Capitalize first letter of each word and join
+            const capitalized = words.map(word => 
+                word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+            ).join(' ');
+            
+            return capitalized;
+        }
+
+        async getAvailableAssets() {
+            // Use the same dynamic discovery method as scanAssetsFolder
+            const imageFiles = await this.discoverImageFiles();
+            
+            const availableAssets = [];
+            
+            for (const imageFile of imageFiles) {
+                const imagePath = `./assets/${imageFile}`;
+                const exists = await this.checkImageExists(imagePath);
+                if (exists) {
+                    availableAssets.push({
+                        path: imagePath,
+                        name: imageFile,
+                        caption: this.generateCaption(imageFile)
+                    });
+                }
+            }
+            
+            return availableAssets;
+        }
+    }
+
+    // Main Photo Album App
+    class PhotoAlbumApp {
+        constructor() {
+            this.dbManager = new DatabaseManager();
+            this.albumManager = new AlbumManager(this.dbManager);
+            this.assetScanner = new AssetScanner(this.albumManager);
+            this.currentView = 'albums';
+            this.currentAlbumId = null;
+            this.selectedPhotos = new Set();
+            this.inSelectionMode = false;
+        }
+
+        async init() {
+            try {
+                await this.dbManager.init();
+                await this.initializeDefaultAlbums();
+                this.setupEventListeners();
+                await this.renderAlbums();
+                
+                // Auto-scan for new assets on startup
+                setTimeout(async () => {
+                    const newCount = await this.assetScanner.scanAssetsFolder();
+                    if (newCount > 0) {
+                        this.showMessage(`Found and added ${newCount} new photos!`);
+                        await this.renderAlbums();
+                    }
+                }, 2000);
+                
+            } catch (error) {
+                console.error('Failed to initialize app:', error);
+                this.showError('Failed to load application. Please refresh the page.');
+            }
+        }
+
+        async initializeDefaultAlbums() {
+            const albums = await this.albumManager.getAlbums();
+            
+            if (albums.length === 0) {
+                console.log('Creating default albums with organized images...');
+                
+                // Create organized albums
+                const natureAlbumId = await this.albumManager.createAlbum(
+                    'Nature Photos', 
+                    '2024-11-09',
+                    'Beautiful nature and landscape photos'
+                );
+                
+                const urbanAlbumId = await this.albumManager.createAlbum(
+                    'Urban Photography', 
+                    '2024-11-08',
+                    'City life and architecture'
+                );
+
+                const gardenAlbumId = await this.albumManager.createAlbum(
+                    'Garden Photos',
+                    '2024-11-10',
+                    'Beautiful garden and flower photos'
+                );
+
+                const catAlbumId = await this.albumManager.createAlbum(
+                    'Cat Photos',
+                    '2024-11-10',
+                    'Cute and playful cat photos'
+                );
+                
+                // Auto album for any remaining images
+                const autoAlbumId = await this.albumManager.createAlbum(
+                    'Auto-Detected Photos',
+                    '2024-11-10',
+                    'Photos automatically detected from assets folder'
+                );
+                
+                console.log('Default albums created successfully');
+                
+                // Organize existing images into proper albums
+                await this.organizeImagesIntoAlbums(natureAlbumId, urbanAlbumId, gardenAlbumId, catAlbumId, autoAlbumId);
+            }
+        }
+
+        async organizeImagesIntoAlbums(natureId, urbanId, gardenId, catId, autoId) {
+            console.log('Organizing images into proper albums...');
+            
+            // Define which images go to which albums
+            const albumMapping = {
+                [natureId]: [
+                    'nature1.jpeg', 'nature2.jpeg', 'nature3.jpeg'
+                ],
+                [urbanId]: [
+                    'urban1.jpeg', 'urban2.jpeg', 'urban3.jpeg'
+                ],
+                [gardenId]: [
+                    'garden1.jpeg', 'garden2.jpeg', 'garden3.jpeg',
+                    'flower1.jpeg', 'flower2.jpeg', 'flower3.jpeg', 'flower4.jpeg'
+                ],
+                [catId]: [
+                    'cat1.jpg', 'cat2.jpg', 'cat3.jpg', 'cat4.jpeg', 'cat5.jpeg'
+                ]
+            };
+            
+            let organizedCount = 0;
+            
+            // Add images to their designated albums
+            for (const [albumId, imageFiles] of Object.entries(albumMapping)) {
+                for (const imageFile of imageFiles) {
+                    const imagePath = `./assets/${imageFile}`;
+                    const exists = await this.checkImageExists(imagePath);
+                    
+                    if (exists) {
+                        const caption = this.assetScanner.generateCaption(imageFile);
+                        await this.albumManager.addPhotoToAlbum(albumId, imagePath, caption);
+                        organizedCount++;
+                        console.log(`Organized ${imageFile} into album`);
+                    }
+                }
+            }
+            
+            console.log(`Organized ${organizedCount} images into albums`);
+        }
+
+        async checkImageExists(url) {
+            return new Promise((resolve) => {
+                const img = new Image();
+                img.onload = () => resolve(true);
+                img.onerror = () => resolve(false);
+                img.src = url;
+                setTimeout(() => resolve(false), 2000);
+            });
+        }
+
+        setupEventListeners() {
+            // Import button
+            const importBtn = document.getElementById('importBtn');
+            if (importBtn) {
+                importBtn.addEventListener('click', () => {
+                    this.handleImport();
+                });
+            }
+
+            // Export button
+            const exportBtn = document.getElementById('exportBtn');
+            if (exportBtn) {
+                exportBtn.addEventListener('click', () => {
+                    this.handleExport();
+                });
+            }
+
+            // Search functionality
+            const searchBtn = document.getElementById('searchBtn');
+            const searchInput = document.getElementById('searchInput');
+            
+            if (searchBtn && searchInput) {
+                const performSearch = () => {
+                    const query = searchInput.value.trim();
+                    console.log('Searching for:', query);
+                    this.handleSearch(query);
+                };
+
+                searchBtn.addEventListener('click', performSearch);
+                searchInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') performSearch();
+                });
+
+                searchInput.addEventListener('input', (e) => {
+                    if (e.target.value.trim() === '') {
+                        this.renderAlbums();
+                    }
+                });
+            }
+
+            // Create album button
+            const createAlbumBtn = document.getElementById('createAlbumBtn');
+            if (createAlbumBtn) {
+                createAlbumBtn.addEventListener('click', () => {
+                    this.handleCreateAlbum();
+                });
+            }
+
+            // Create first album button
+            const createFirstAlbumBtn = document.getElementById('createFirstAlbum');
+            if (createFirstAlbumBtn) {
+                createFirstAlbumBtn.addEventListener('click', () => {
+                    this.handleCreateAlbum();
+                });
+            }
+
+            // Add photos button
+            const addPhotosBtn = document.getElementById('addPhotosBtn');
+            if (addPhotosBtn) {
+                addPhotosBtn.addEventListener('click', () => {
+                    this.showAddPhotosModal();
+                });
+            }
+            
+            // Upload photos button
+            const uploadPhotosBtn = document.getElementById('uploadPhotosBtn');
+            if (uploadPhotosBtn) {
+                uploadPhotosBtn.addEventListener('click', () => {
+                    // Show the file input directly for upload
+                    document.getElementById('fileInput').click();
+                });
+            }
+            
+            // Import from folder button
+            const importFolderBtn = document.getElementById('importFolderBtn');
+            if (importFolderBtn) {
+                importFolderBtn.addEventListener('click', () => {
+                    // Show the file input for importing images from folder
+                    document.getElementById('fileInput').click();
+                });
+            }
+            
+            // Delete photos button
+            const deletePhotosBtn = document.getElementById('deletePhotosBtn');
+            if (deletePhotosBtn) {
+                deletePhotosBtn.addEventListener('click', () => {
+                    if (this.inSelectionMode) {
+                        this.confirmAndDeletePhotos();
+                    } else {
+                        this.showMessage('Please enter selection mode first.');
+                    }
+                });
+            }
+            
+            // Select photos button
+            const selectPhotosBtn = document.getElementById('selectPhotosBtn');
+            if (selectPhotosBtn) {
+                selectPhotosBtn.addEventListener('click', () => {
+                    this.togglePhotoSelection();
+                });
+            }
+            
+            // Download photos button
+            const downloadPhotosBtn = document.getElementById('downloadPhotosBtn');
+            if (downloadPhotosBtn) {
+                downloadPhotosBtn.addEventListener('click', () => {
+                    this.downloadSelectedPhotos();
+                });
+            }
+
+            // Scan assets button
+            const scanAssetsBtn = document.getElementById('scanAssetsBtn');
+            if (scanAssetsBtn) {
+                scanAssetsBtn.addEventListener('click', () => {
+                    this.handleScanAssets();
+                });
+            }
+
+            // Organize images button
+            const organizeImagesBtn = document.getElementById('organizeImagesBtn');
+            if (organizeImagesBtn) {
+                organizeImagesBtn.addEventListener('click', () => {
+                    this.handleOrganizeImages();
+                });
+            }
+
+            // Reset data button
+            const resetDataBtn = document.getElementById('resetDataBtn');
+            if (resetDataBtn) {
+                resetDataBtn.addEventListener('click', () => {
+                    this.handleResetData();
+                });
+            }
+
+            // Modal event listeners - FIXED
+            const closeModal = document.getElementById('closeModal');
+            const cancelAddPhotos = document.getElementById('cancelAddPhotos');
+            const confirmAddPhotos = document.getElementById('confirmAddPhotos');
+            const addCustomPhoto = document.getElementById('addCustomPhoto');
+            const modal = document.getElementById('addPhotosModal');
+
+            // Close modal when clicking outside
+            if (modal) {
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) {
+                        this.hideAddPhotosModal();
+                    }
+                });
+            }
+
+            if (closeModal) {
+                closeModal.addEventListener('click', () => {
+                    this.hideAddPhotosModal();
+                });
+            }
+
+            if (cancelAddPhotos) {
+                cancelAddPhotos.addEventListener('click', () => {
+                    this.hideAddPhotosModal();
+                });
+            }
+
+            if (confirmAddPhotos) {
+                confirmAddPhotos.addEventListener('click', () => {
+                    this.addSelectedPhotosToAlbum();
+                });
+            }
+
+            if (addCustomPhoto) {
+                addCustomPhoto.addEventListener('click', () => {
+                    this.addCustomPhoto();
+                });
+            }
+
+            // File import (for JSON/ZIP)
+            const importFile = document.getElementById('importFile');
+            if (importFile) {
+                importFile.addEventListener('change', (e) => {
+                    this.handleFileImport(e);
+                });
+            }
+            
+            // Direct image import
+            const directImageImport = document.getElementById('directImageImport');
+            if (directImageImport) {
+                directImageImport.addEventListener('change', (e) => {
+                    this.handleDirectImageImport(e);
+                });
+            }
+            
+            // Drag & Drop functionality
+            const dropZone = document.getElementById('dropZone');
+            const fileInput = document.getElementById('fileInput');
+            const browseFiles = document.getElementById('browseFiles');
+            
+            if (dropZone && fileInput && browseFiles) {
+                // Click to browse files
+                browseFiles.addEventListener('click', () => {
+                    fileInput.click();
+                });
+                
+                // Prevent default drag behaviors
+                ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                    dropZone.addEventListener(eventName, preventDefaults, false);
+                    document.body.addEventListener(eventName, preventDefaults, false);
+                });
+                
+                // Highlight drop area when item is dragged over it
+                ['dragenter', 'dragover'].forEach(eventName => {
+                    dropZone.addEventListener(eventName, highlight, false);
+                });
+                
+                ['dragleave', 'drop'].forEach(eventName => {
+                    dropZone.addEventListener(eventName, unhighlight, false);
+                });
+                
+                // Handle dropped files
+                dropZone.addEventListener('drop', handleDrop, false);
+                
+                // Handle selected files
+                fileInput.addEventListener('change', handleFiles);
+            }
+            
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            
+            function highlight() {
+                dropZone.classList.add('dragover');
+            }
+            
+            function unhighlight() {
+                dropZone.classList.remove('dragover');
+            }
+            
+            function handleDrop(e) {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+                
+                handleFiles({ target: { files } });
+            }
+            
+            function handleFiles(e) {
+                const files = e.target.files;
+                if (files.length > 0) {
+                    app.handleImageUpload(Array.from(files));
+                }
+            }
+
+            // Breadcrumb home
+            const breadcrumbHome = document.getElementById('breadcrumb-home');
+            if (breadcrumbHome) {
+                breadcrumbHome.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    this.showAlbums();
+                });
+            }
+        }
+
+        async handleOrganizeImages() {
+            if (confirm('This will reorganize images into their proper albums. Auto-detected photos will be preserved. Continue?')) {
+                try {
+                    // Get all photos first to preserve the auto-detected ones
+                    const allPhotos = await this.dbManager.all(`SELECT * FROM photos`);
+                    const autoAlbum = await this.albumManager.getAlbumByTitle('Auto-Detected Photos');
+                    
+                    if (!autoAlbum) {
+                        console.error('Auto-Detected Photos album not found');
+                        return;
+                    }
+                    
+                    // Keep track of which photos are already in the auto album
+                    const autoAlbumPhotos = allPhotos.filter(photo => photo.album_id === autoAlbum.id);
+                    
+                    // Clear existing photos from organized albums (but not from auto album)
+                    if (this.dbManager.useFallback) {
+                        const albums = JSON.parse(localStorage.getItem('albums') || '[]');
+                        const autoAlbumData = albums.find(album => album.title === 'Auto-Detected Photos');
+                        
+                        // Get photos that are NOT in the auto album
+                        const nonAutoPhotos = JSON.parse(localStorage.getItem('photos') || '[]')
+                            .filter(photo => photo.album_id !== autoAlbumData?.id);
+                        
+                        // Keep only auto album photos in the list
+                        const autoPhotos = JSON.parse(localStorage.getItem('photos') || '[]')
+                            .filter(photo => photo.album_id === autoAlbumData?.id);
+                        
+                        localStorage.setItem('photos', JSON.stringify(autoPhotos));
+                    } else {
+                        // Delete photos that are NOT in the auto album
+                        await this.dbManager.run(`DELETE FROM photos WHERE album_id != ?`, [autoAlbum.id]);
+                    }
+                    
+                    // Reorganize images
+                    const natureAlbum = await this.albumManager.getAlbumByTitle('Nature Photos');
+                    const urbanAlbum = await this.albumManager.getAlbumByTitle('Urban Photography');
+                    const gardenAlbum = await this.albumManager.getAlbumByTitle('Garden Photos');
+                    const catAlbum = await this.albumManager.getAlbumByTitle('Cat Photos');
+                    
+                    if (natureAlbum && urbanAlbum && gardenAlbum && catAlbum) {
+                        await this.organizeImagesIntoAlbums(
+                            natureAlbum.id, 
+                            urbanAlbum.id, 
+                            gardenAlbum.id, 
+                            catAlbum.id, 
+                            autoAlbum.id
+                        );
+                        this.showMessage('Images reorganized successfully! Auto-detected photos preserved.');
+                        await this.renderAlbums();
+                    }
+                    
+                } catch (error) {
+                    console.error('Reorganization failed:', error);
+                    this.showError('Failed to reorganize images.');
+                }
+            }
+        }
+
+        async handleScanAssets() {
+            this.showMessage('Scanning assets folder for new images...', 'info');
+            
+            try {
+                const newCount = await this.assetScanner.scanAssetsFolder();
+                
+                if (newCount > 0) {
+                    this.showMessage(`Found and added ${newCount} new photos to Auto-Detected album!`);
+                    await this.renderAlbums();
+                } else {
+                    this.showMessage('No new photos found in assets folder.');
+                }
+                
+            } catch (error) {
+                console.error('Asset scan failed:', error);
+                this.showError('Failed to scan assets folder.');
+            }
+        }
+
+        async handleResetData() {
+            if (confirm('This will delete ALL albums and photos. This action cannot be undone. Continue?')) {
+                try {
+                    // Clear all data
+                    if (this.dbManager.useFallback) {
+                        localStorage.removeItem('albums');
+                        localStorage.removeItem('photos');
+                        localStorage.removeItem('app_state');
+                    } else {
+                        await this.dbManager.run('DELETE FROM photos');
+                        await this.dbManager.run('DELETE FROM albums');
+                        await this.dbManager.run('DELETE FROM app_state');
+                    }
+                    
+                    this.showMessage('All data has been reset.');
+                    
+                    // Re-initialize with default albums
+                    await this.initializeDefaultAlbums();
+                    await this.renderAlbums();
+                    
+                } catch (error) {
+                    console.error('Reset failed:', error);
+                    this.showError('Failed to reset data.');
+                }
+            }
+        }
+
+        async showAddPhotosModal() {
+            if (!this.currentAlbumId) {
+                this.showError('No album selected.');
+                return;
+            }
+
+            const modal = document.getElementById('addPhotosModal');
+            const availablePhotosList = document.getElementById('available-photos-list');
+            
+            if (!modal || !availablePhotosList) return;
+
+            // Show loading indicator
+            availablePhotosList.innerHTML = '<div class="loading">Loading available photos...</div>';
+
+            // Get available photos from assets folder
+            const availableAssets = await this.assetScanner.getAvailableAssets();
+            const currentAlbum = await this.albumManager.getAlbumById(this.currentAlbumId);
+            const currentAlbumPhotos = currentAlbum?.photos || [];
+            
+            // Filter out photos that are already in the current album
+            const currentAlbumPaths = new Set(currentAlbumPhotos.map(photo => photo.path));
+            const availablePhotos = availableAssets.filter(asset => !currentAlbumPaths.has(asset.path));
+
+            // Display available photos using a document fragment for better performance
+            const fragment = document.createDocumentFragment();
+            
+            availablePhotos.forEach(asset => {
+                const item = document.createElement('div');
+                item.className = 'photo-select-item';
+                item.dataset.path = asset.path;
+                
+                item.innerHTML = `
+                    <img src="${asset.path}" alt="${asset.name}" 
+                         onerror="this.style.display='none'">
+                    <div class="photo-select-info">
+                        <span class="photo-name">${asset.name}</span>
+                        <span class="photo-caption-small">${asset.caption}</span>
+                    </div>
+                    <input type="checkbox" class="photo-checkbox" 
+                           data-path="${asset.path}" 
+                           data-caption="${asset.caption}">
+                `;
+                
+                fragment.appendChild(item);
+            });
+
+            availablePhotosList.innerHTML = '';
+            availablePhotosList.appendChild(fragment);
+
+            // Add checkbox event listeners
+            document.querySelectorAll('.photo-checkbox').forEach(checkbox => {
+                checkbox.addEventListener('change', (e) => {
+                    const path = e.target.dataset.path;
+                    const caption = e.target.dataset.caption;
+                    
+                    if (e.target.checked) {
+                        this.selectedPhotos.add({ path, caption });
+                    } else {
+                        // Remove from selected photos
+                        for (let photo of this.selectedPhotos) {
+                            if (photo.path === path) {
+                                this.selectedPhotos.delete(photo);
+                                break;
+                            }
+                        }
+                    }
+                });
+            });
+
+            // Show modal
+            modal.classList.remove('hidden');
+            this.selectedPhotos.clear();
+        }
+
+        hideAddPhotosModal() {
+            const modal = document.getElementById('addPhotosModal');
+            if (modal) {
+                modal.classList.add('hidden');
+            }
+            this.selectedPhotos.clear();
+        }
+
+        async addSelectedPhotosToAlbum() {
+            if (this.selectedPhotos.size === 0) {
+                this.showError('Please select at least one photo to add.');
+                return;
+            }
+
+            try {
+                for (const photo of this.selectedPhotos) {
+                    await this.albumManager.addPhotoToAlbum(
+                        this.currentAlbumId, 
+                        photo.path, 
+                        photo.caption
+                    );
+                }
+
+                this.showMessage(`Added ${this.selectedPhotos.size} photos to album!`);
+                this.hideAddPhotosModal();
+                
+                // Refresh the album view
+                await this.viewAlbum(this.currentAlbumId);
+                
+            } catch (error) {
+                console.error('Failed to add photos:', error);
+                this.showError('Failed to add photos to album.');
+            }
+        }
+
+        async addCustomPhoto() {
+            const urlInput = document.getElementById('customPhotoUrl');
+            const captionInput = document.getElementById('customPhotoCaption');
+            
+            const url = urlInput?.value.trim();
+            const caption = captionInput?.value.trim() || 'Custom Photo';
+
+            if (!url) {
+                this.showError('Please enter a photo URL or path.');
+                return;
+            }
+
+            if (!this.currentAlbumId) {
+                this.showError('No album selected.');
+                return;
+            }
+
+            try {
+                // Verify the image exists
+                const imageExists = await this.isValidImageUrl(url);
+                if (!imageExists) {
+                    this.showError('The image URL or path is not accessible. Please check and try again.');
+                    return;
+                }
+
+                await this.albumManager.addPhotoToAlbum(this.currentAlbumId, url, caption);
+                this.showMessage('Custom photo added successfully!');
+
+                // Clear inputs
+                if (urlInput) urlInput.value = '';
+                if (captionInput) captionInput.value = '';
+
+                // Refresh album view
+                await this.viewAlbum(this.currentAlbumId);
+                
+            } catch (error) {
+                console.error('Failed to add custom photo:', error);
+                this.showError('Failed to add custom photo.');
+            }
+        }
+        
+        // Improved image validation that can handle direct image URLs as well as image hosting services
+        async isValidImageUrl(url) {
+            // Check if it's a direct image URL based on extension
+            const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp', '.svg'];
+            const lowerUrl = url.toLowerCase();
+            
+            if (imageExtensions.some(ext => lowerUrl.includes(ext))) {
+                // If it has an image extension, try to load it directly
+                return await this.checkImageExists(url);
+            } else {
+                // For image hosting services like imgur, ibb.co, etc., that may redirect to actual image
+                // Try to fetch the URL with a HEAD request to check if it's accessible
+                try {
+                    // For image hosting services, we'll try to verify the URL differently
+                    // Create a temporary image to test if it resolves to an image
+                    return await this.checkImageExists(url);
+                } catch (error) {
+                    console.error('Error validating image URL:', error);
+                    return false;
+                }
+            }
+        }
+        
+        // Updated checkImageExists to handle various image hosting services
+        async checkImageExists(url) {
+            return new Promise((resolve) => {
+                // For image hosting services, we'll try to load the image
+                const img = new Image();
+                
+                img.onload = () => resolve(true);
+                img.onerror = () => {
+                    // Some image hosting services require specific headers or have CORS issues
+                    // As a fallback, we can try to construct a proxy request or just allow the URL
+                    // For now, we'll resolve to true for known image hosting services
+                    const knownServices = ['imgur.com', 'ibb.co', 'flickr.com', 'photobucket.com', 'imageshack.us'];
+                    const isKnownService = knownServices.some(service => url.includes(service));
+                    
+                    if (isKnownService) {
+                        // For known image hosting services, if we can't directly load the image
+                        // we'll return true to allow the URL to be added (user can validate visually)
+                        resolve(true);
+                    } else {
+                        resolve(false);
+                    }
+                };
+                
+                // Add a timeout to prevent hanging
+                const timeout = setTimeout(() => {
+                    img.onload = null;
+                    img.onerror = null;
+                    resolve(false);
+                }, 5000); // 5 second timeout
+                
+                img.src = url;
+                
+                // Clear timeout if image loads successfully
+                img.onload = () => {
+                    clearTimeout(timeout);
+                    resolve(true);
+                };
+                
+                img.onerror = () => {
+                    clearTimeout(timeout);
+                    // Check if it's from a known service that might have CORS issues
+                    const knownServices = ['imgur.com', 'ibb.co', 'flickr.com', 'photobucket.com', 'imageshack.us'];
+                    const isKnownService = knownServices.some(service => url.includes(service));
+                    
+                    if (isKnownService) {
+                        resolve(true);
+                    } else {
+                        resolve(false);
+                    }
+                };
+            });
+        }
+
+        async handleSearch(query) {
+            const trimmedQuery = query.trim();
+            
+            if (!trimmedQuery) {
+                await this.renderAlbums();
+                return;
+            }
+
+            try {
+                const results = await this.albumManager.searchAlbums(trimmedQuery);
+                await this.renderAlbumList(results, `Search results for "${trimmedQuery}"`);
+            } catch (error) {
+                console.error('Search failed:', error);
+                this.showError('Search failed. Please try again.');
+            }
+        }
+
+        async renderAlbums() {
+            try {
+                const albums = await this.albumManager.getAlbums();
+                await this.renderAlbumList(albums, 'All Albums');
+            } catch (error) {
+                console.error('Failed to render albums:', error);
+                this.showError('Failed to load albums.');
+            }
+        }
+
+        async renderAlbumList(albums, title = 'Albums') {
+            const container = document.getElementById('albums-list');
+            const albumsContainer = document.getElementById('albums-container');
+            const albumViewer = document.getElementById('album-viewer');
+            const emptyState = document.getElementById('emptyState');
+
+            if (!container || !albumsContainer || !albumViewer) return;
+
+            // Hide viewer, show albums container
+            albumViewer.classList.add('hidden');
+            albumsContainer.classList.remove('hidden');
+
+            // Hide breadcrumb
+            const breadcrumb = document.querySelector('.breadcrumb');
+            if (breadcrumb) {
+                breadcrumb.classList.add('hidden');
+            }
+
+            // Show empty state if no albums
+            if (albums.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">🔍</div>
+                        <h3>No albums found</h3>
+                        <p>Try a different search term or create a new album</p>
+                        <button class="btn-primary" onclick="app.handleCreateAlbum()">
+                            Create New Album
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            // Hide empty state
+            if (emptyState) {
+                emptyState.classList.add('hidden');
+            }
+
+            // Add title
+            let headerHtml = '';
+            if (title !== 'All Albums') {
+                headerHtml = `<h2 style="margin-bottom: 1rem; color: var(--primary-color);">${title}</h2>`;
+            }
+
+            container.innerHTML = headerHtml;
+
+            for (const album of albums) {
+                const albumDiv = document.createElement('div');
+                albumDiv.className = 'album-card';
+                
+                // Get photos for this album
+                const fullAlbum = await this.albumManager.getAlbumById(album.id);
+                const photoCount = fullAlbum?.photos?.length || 0;
+
+                albumDiv.innerHTML = `
+                    <div class="album-cover">
+                        ${fullAlbum?.photos?.length ? `
+                            <img src="${fullAlbum.photos[0].path}" 
+                                 alt="${fullAlbum.photos[0].caption || 'Album cover'}"
+                                 onerror="this.src='https://picsum.photos/seed/fallback/300/200'">
+                        ` : `
+                            <div class="no-photos-placeholder">
+                                <span>No Photos</span>
+                            </div>
+                        `}
+                    </div>
+                    <div class="album-info">
+                        <h3>${this.escapeHtml(album.title) || 'Untitled Album'}</h3>
+                        <p class="date">${this.formatDate(album.date) || 'Unknown date'}</p>
+                        ${album.description ? `<p class="description">${this.escapeHtml(album.description)}</p>` : ''}
+                        <div class="album-stats">
+                            <span class="photo-count">📸 ${photoCount} photo${photoCount !== 1 ? 's' : ''}</span>
+                        </div>
+                    </div>
+                `;
+
+                // Click to view album
+                albumDiv.addEventListener('click', () => {
+                    this.viewAlbum(album.id);
+                });
+
+                container.appendChild(albumDiv);
+            }
+        }
+
+        async viewAlbum(albumId, showSelection = false) {
+            this.currentAlbumId = albumId; // Store current album ID
+            
+            try {
+                const album = await this.albumManager.getAlbumById(albumId);
+                if (!album) {
+                    this.showError('Album not found.');
+                    return;
+                }
+
+                const albumsContainer = document.getElementById('albums-container');
+                const albumViewer = document.getElementById('album-viewer');
+                const currentAlbumTitle = document.getElementById('current-album-title');
+                const photosGrid = document.getElementById('photos-grid');
+                const breadcrumbCurrent = document.getElementById('breadcrumb-current');
+
+                if (!albumsContainer || !albumViewer || !currentAlbumTitle || !photosGrid) return;
+
+                // Update breadcrumb and title
+                if (breadcrumbCurrent) breadcrumbCurrent.textContent = album.title;
+                currentAlbumTitle.textContent = album.title;
+
+                // Show breadcrumb
+                const breadcrumb = document.querySelector('.breadcrumb');
+                if (breadcrumb) breadcrumb.classList.remove('hidden');
+
+                // Render photos with selection capability
+                photosGrid.innerHTML = album.photos.map((photo) => {
+                    const checkboxHtml = showSelection ? 
+                        `<input type="checkbox" class="photo-select-checkbox" data-photo-id="${photo.id}">` : '';
+                    return `
+                        <div class="photo-tile" data-photo-id="${photo.id}">
+                            <div class="photo-tile-content">
+                                ${checkboxHtml}
+                                <img src="${photo.path}" 
+                                     alt="${this.escapeHtml(photo.caption) || 'Photo'}"
+                                     onerror="this.src='https://picsum.photos/seed/fallback/300/200'">
+                            </div>
+                            <div class="photo-overlay">
+                                <div class="photo-caption">${this.escapeHtml(photo.caption) || ''}</div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                // Switch views
+                albumsContainer.classList.add('hidden');
+                albumViewer.classList.remove('hidden');
+
+                // Setup back button
+                const backToAlbums = document.getElementById('backToAlbums');
+                if (backToAlbums) {
+                    backToAlbums.onclick = () => {
+                        this.currentAlbumId = null; // Clear current album ID
+                        this.showAlbums();
+                    };
+                }
+
+                // If in selection mode, show additional UI elements and add event listeners
+                if (showSelection) {
+                    photosGrid.classList.add('selection-mode');
+                    
+                    // Add event listeners for photo checkboxes
+                    const checkboxes = document.querySelectorAll('.photo-select-checkbox');
+                    checkboxes.forEach(checkbox => {
+                        checkbox.addEventListener('change', (e) => {
+                            this.updateDeleteButtonState();
+                        });
+                    });
+                    
+                    // Add click event to photo tiles to toggle checkbox
+                    const photoTiles = document.querySelectorAll('.photo-tile');
+                    photoTiles.forEach(tile => {
+                        tile.addEventListener('click', (e) => {
+                            // Only toggle if not clicking directly on the checkbox
+                            if (!e.target.classList.contains('photo-select-checkbox')) {
+                                const checkbox = tile.querySelector('.photo-select-checkbox');
+                                if (checkbox) {
+                                    checkbox.checked = !checkbox.checked;
+                                    this.updateDeleteButtonState();
+                                }
+                            }
+                        });
+                    });
+                } else {
+                    photosGrid.classList.remove('selection-mode');
+                    // Remove selection mode class from individual tiles
+                    const photoTiles = document.querySelectorAll('.photo-tile');
+                    photoTiles.forEach(tile => {
+                        tile.classList.remove('selection-mode');
+                    });
+                }
+
+            } catch (error) {
+                console.error('Failed to view album:', error);
+                this.showError('Failed to load album.');
+            }
+        }
+
+        showAlbums() {
+            const albumsContainer = document.getElementById('albums-container');
+            const albumViewer = document.getElementById('album-viewer');
+            const breadcrumb = document.querySelector('.breadcrumb');
+
+            if (albumsContainer && albumViewer) {
+                albumViewer.classList.add('hidden');
+                albumsContainer.classList.remove('hidden');
+            }
+
+            if (breadcrumb) breadcrumb.classList.add('hidden');
+
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) searchInput.value = '';
+
+            this.renderAlbums();
+        }
+
+        async handleCreateAlbum() {
+            const title = prompt('Enter album title:');
+            if (!title) return;
+
+            const date = new Date().toISOString().split('T')[0];
+            const description = prompt('Enter album description (optional):') || '';
+            
+            try {
+                await this.albumManager.createAlbum(title, date, description);
+                await this.renderAlbums();
+                this.showMessage('Album created successfully!');
+            } catch (error) {
+                console.error('Failed to create album:', error);
+                this.showError('Failed to create album.');
+            }
+        }
+
+        handleImport() {
+            // Show a dialog to choose between importing data or importing images
+            const choice = confirm('Choose import type:\n\nOK - Import album data (JSON/ZIP)\nCancel - Import image files directly');
+            
+            if (choice) {
+                // Import album data (JSON/ZIP)
+                const importFile = document.getElementById('importFile');
+                if (importFile) importFile.click();
+            } else {
+                // Import image files directly
+                const directImageImport = document.getElementById('directImageImport');
+                if (directImageImport) directImageImport.click();
+            }
+        }
+        
+        async handleDirectImageImport(event) {
+            const input = event.target;
+            if (!input.files || input.files.length === 0) return;
+            
+            if (!this.currentAlbumId) {
+                this.showError('Please select an album first.');
+                input.value = '';
+                return;
+            }
+            
+            const files = Array.from(input.files);
+            const imageFiles = files.filter(file => 
+                file.type.startsWith('image/') || 
+                ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp'].some(ext => 
+                    file.name.toLowerCase().endsWith(ext)
+                )
+            );
+            
+            if (imageFiles.length === 0) {
+                this.showError('No valid image files found.');
+                input.value = '';
+                return;
+            }
+            
+            // Process each selected image file
+            for (const file of imageFiles) {
+                try {
+                    // Convert file to data URL for storage
+                    const dataUrl = await this.fileToDataUrl(file);
+                    
+                    // Generate a unique filename
+                    const fileName = `imported_${Date.now()}_${file.name}`;
+                    const caption = file.name.replace(/\.[^/.]+$/, ""); // Remove extension for caption
+                    
+                    // Add to current album
+                    await this.albumManager.addPhotoToAlbum(this.currentAlbumId, dataUrl, caption);
+                    
+                    console.log(`Added image: ${file.name}`);
+                } catch (error) {
+                    console.error(`Failed to import image ${file.name}:`, error);
+                }
+            }
+            
+            this.showMessage(`Imported ${imageFiles.length} image(s) successfully!`);
+            
+            // Refresh the album view if we're viewing an album
+            if (this.currentAlbumId) {
+                await this.viewAlbum(this.currentAlbumId);
+            }
+            
+            input.value = '';
+        }
+        
+        fileToDataUrl(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
+        }
+        
+        async handleImageUpload(files) {
+            if (!this.currentAlbumId) {
+                this.showError('Please select an album first.');
+                return;
+            }
+            
+            const imageFiles = files.filter(file => 
+                file.type.startsWith('image/') || 
+                ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp'].some(ext => 
+                    file.name.toLowerCase().endsWith(ext)
+                )
+            );
+            
+            if (imageFiles.length === 0) {
+                this.showError('No valid image files found.');
+                return;
+            }
+            
+            // Process each selected image file
+            for (const file of imageFiles) {
+                try {
+                    // Convert file to data URL for storage
+                    const dataUrl = await this.fileToDataUrl(file);
+                    
+                    // Generate a unique filename
+                    const fileName = `uploaded_${Date.now()}_${file.name}`;
+                    const caption = file.name.replace(/\.[^/.]+$/, ""); // Remove extension for caption
+                    
+                    // Add to current album
+                    await this.albumManager.addPhotoToAlbum(this.currentAlbumId, dataUrl, caption);
+                    
+                    console.log(`Added image: ${file.name}`);
+                } catch (error) {
+                    console.error(`Failed to upload image ${file.name}:`, error);
+                }
+            }
+            
+            this.showMessage(`Uploaded ${imageFiles.length} image(s) successfully!`);
+            
+            // Refresh the album view
+            if (this.currentAlbumId) {
+                await this.viewAlbum(this.currentAlbumId);
+            }
+        }
+
+        async handleExport() {
+            try {
+                // Get all albums and photos
+                const albums = await this.albumManager.getAlbums();
+                const allPhotos = [];
+                
+                // Get all photos for each album
+                for (const album of albums) {
+                    const fullAlbum = await this.albumManager.getAlbumById(album.id);
+                    if (fullAlbum && fullAlbum.photos) {
+                        allPhotos.push(...fullAlbum.photos);
+                    }
+                }
+                
+                // Create export data
+                const exportData = {
+                    albums: albums,
+                    photos: allPhotos,
+                    exportedAt: new Date().toISOString(),
+                    version: '1.0'
+                };
+                
+                // Convert to JSON
+                const jsonStr = JSON.stringify(exportData, null, 2);
+                
+                // Create download link
+                const blob = new Blob([jsonStr], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `photo_album_export_${new Date().toISOString().slice(0, 10)}.json`;
+                document.body.appendChild(a);
+                a.click();
+                
+                // Clean up
+                setTimeout(() => {
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                }, 100);
+                
+                this.showMessage('Data exported successfully!');
+            } catch (error) {
+                console.error('Export failed:', error);
+                this.showError('Failed to export data.');
+            }
+        }
+
+        async handleFileImport(event) {
+            const input = event.target;
+            if (!input.files || input.files.length === 0) return;
+            
+            const file = input.files[0];
+            const fileName = file.name.toLowerCase();
+            
+            try {
+                if (fileName.endsWith('.json')) {
+                    // Handle JSON file import
+                    const text = await file.text();
+                    const data = JSON.parse(text);
+                    
+                    if (data.albums && data.photos) {
+                        // Clear existing data if user confirms
+                        if (confirm('Importing will overwrite existing data. Continue?')) {
+                            // Clear existing albums and photos in database
+                            if (this.dbManager.useFallback) {
+                                localStorage.setItem('albums', JSON.stringify(data.albums));
+                                localStorage.setItem('photos', JSON.stringify(data.photos));
+                            } else {
+                                await this.dbManager.run('DELETE FROM photos');
+                                await this.dbManager.run('DELETE FROM albums');
+                                
+                                // Insert imported albums
+                                for (const album of data.albums) {
+                                    await this.dbManager.run(
+                                        `INSERT INTO albums (id, title, date, description, created_at) VALUES (?, ?, ?, ?, ?)`,
+                                        [album.id, album.title, album.date, album.description, album.created_at || new Date().toISOString()]
+                                    );
+                                }
+                                
+                                // Insert imported photos
+                                for (const photo of data.photos) {
+                                    await this.dbManager.run(
+                                        `INSERT INTO photos (id, album_id, path, caption, file_name, added_at) VALUES (?, ?, ?, ?, ?, ?)`,
+                                        [photo.id, photo.album_id, photo.path, photo.caption, photo.file_name, photo.added_at || new Date().toISOString()]
+                                    );
+                                }
+                            }
+                            
+                            this.showMessage('Data imported successfully!');
+                            await this.renderAlbums();
+                        }
+                    } else {
+                        this.showError('Invalid JSON format. Expected "albums" and "photos" properties.');
+                    }
+                } else if (fileName.endsWith('.zip')) {
+                    this.showError('ZIP import is not yet implemented in this version.');
+                } else {
+                    this.showError('Unsupported file format. Please select a JSON or ZIP file.');
+                }
+            } catch (error) {
+                console.error('Import failed:', error);
+                this.showError('Failed to import file. Please check the file format and try again.');
+            } finally {
+                input.value = '';
+            }
+        }
+
+        showError(message) {
+            this.showMessage(message, 'error');
+        }
+
+        showMessage(message, type = 'success') {
+            const bgColor = type === 'error' ? '#ef4444' : type === 'info' ? '#3b82f6' : '#10b981';
+            const toast = document.createElement('div');
+            toast.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 12px 20px;
+                background: ${bgColor};
+                color: white;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                z-index: 10000;
+                font-weight: 500;
+                max-width: 300px;
+            `;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                if (toast.parentNode) toast.parentNode.removeChild(toast);
+            }, 4000);
+        }
+
+        escapeHtml(unsafe) {
+            if (!unsafe) return '';
+            return unsafe
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        formatDate(dateString) {
+            if (!dateString) return '';
+            try {
+                const date = new Date(dateString);
+                return date.toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+            } catch {
+                return dateString;
+            }
+        }
+        
+        // Toggle photo selection mode
+        togglePhotoSelection() {
+            if (!this.currentAlbumId) {
+                this.showError('No album selected.');
+                return;
+            }
+            
+            // Check if we're currently in selection mode
+            if (this.inSelectionMode) {
+                // Exit selection mode
+                this.inSelectionMode = false;
+                this.viewAlbum(this.currentAlbumId, false);
+                
+                // Reset button to original state
+                const selectBtn = document.getElementById('selectPhotosBtn');
+                if (selectBtn) {
+                    selectBtn.innerHTML = '<span class="btn-icon">☑️</span><span class="btn-text">Select</span>';
+                }
+                
+                // Reset other buttons
+                const deleteBtn = document.getElementById('deletePhotosBtn');
+                if (deleteBtn) {
+                    deleteBtn.innerHTML = '<span class="btn-icon">🗑️</span><span class="btn-text">Delete</span>';
+                    // Restore original functionality
+                    deleteBtn.onclick = () => this.togglePhotoSelection();
+                }
+                
+                this.disableSelectionMode();
+            } else {
+                // Enter selection mode
+                this.inSelectionMode = true;
+                
+                // Re-render the album in selection mode
+                this.viewAlbum(this.currentAlbumId, true);
+                
+                // Change button to indicate active selection mode
+                const selectBtn = document.getElementById('selectPhotosBtn');
+                if (selectBtn) {
+                    selectBtn.innerHTML = '<span class="btn-icon">❌</span><span class="btn-text">Cancel</span>';
+                }
+                
+                // Update other button functionality for selection mode
+                this.enableSelectionMode();
+            }
+        }
+        
+        // Enable selection mode UI changes
+        enableSelectionMode() {
+            // Change the styling to indicate selection mode
+            const viewerHeader = document.querySelector('.viewer-header');
+            if (viewerHeader) {
+                viewerHeader.classList.add('selection-mode-active');
+            }
+            
+            // Disable other buttons temporarily
+            document.getElementById('addPhotosBtn').disabled = true;
+            document.getElementById('uploadPhotosBtn').disabled = true;
+            document.getElementById('importFolderBtn').disabled = true;
+        }
+        
+        // Disable selection mode UI changes
+        disableSelectionMode() {
+            // Change the styling back
+            const viewerHeader = document.querySelector('.viewer-header');
+            if (viewerHeader) {
+                viewerHeader.classList.remove('selection-mode-active');
+            }
+            
+            // Re-enable other buttons
+            document.getElementById('addPhotosBtn').disabled = false;
+            document.getElementById('uploadPhotosBtn').disabled = false;
+            document.getElementById('importFolderBtn').disabled = false;
+            
+            // Reset delete button
+            const deleteBtn = document.getElementById('deletePhotosBtn');
+            if (deleteBtn) {
+                deleteBtn.innerHTML = '<span class="btn-icon">🗑️</span><span class="btn-text">Delete</span>';
+                deleteBtn.onclick = () => this.togglePhotoSelection();
+            }
+        }
+        
+        // Update delete button state based on number of selected photos
+        updateDeleteButtonState() {
+            const selectedCount = document.querySelectorAll('.photo-select-checkbox:checked').length;
+            const deleteBtn = document.getElementById('deletePhotosBtn');
+            
+            if (deleteBtn) {
+                if (selectedCount > 0) {
+                    deleteBtn.innerHTML = `<span class="btn-icon">🗑️</span><span class="btn-text">Delete (${selectedCount})</span>`;
+                } else {
+                    deleteBtn.innerHTML = '<span class="btn-icon">✅</span><span class="btn-text">Confirm</span>';
+                }
+            }
+        }
+        
+        // Confirm and delete selected photos
+        async confirmAndDeletePhotos() {
+            const selectedCheckboxes = document.querySelectorAll('.photo-select-checkbox:checked');
+            
+            if (selectedCheckboxes.length === 0) {
+                this.showMessage('No photos selected for deletion.');
+                this.disableSelectionMode();
+                // Return to normal album view
+                await this.viewAlbum(this.currentAlbumId);
+                return;
+            }
+            
+            const confirmMsg = `Are you sure you want to delete ${selectedCheckboxes.length} photo(s)?`;
+            if (!confirm(confirmMsg)) {
+                return;
+            }
+            
+            try {
+                // Get photo IDs to delete
+                const photoIds = Array.from(selectedCheckboxes).map(cb => cb.dataset.photoId);
+                
+                // Delete photos from database
+                for (const photoId of photoIds) {
+                    if (this.dbManager.useFallback) {
+                        // For localStorage, we need to remove the photo
+                        const photos = JSON.parse(localStorage.getItem('photos') || '[]');
+                        const updatedPhotos = photos.filter(photo => photo.id !== photoId);
+                        localStorage.setItem('photos', JSON.stringify(updatedPhotos));
+                    } else {
+                        await this.dbManager.run('DELETE FROM photos WHERE id = ?', [photoId]);
+                    }
+                }
+                
+                this.showMessage(`Deleted ${photoIds.length} photo(s) successfully!`);
+                
+                // Return to normal album view
+                this.disableSelectionMode();
+                await this.viewAlbum(this.currentAlbumId);
+                
+            } catch (error) {
+                console.error('Failed to delete photos:', error);
+                this.showError('Failed to delete photos.');
+                
+                // Even if there's an error, return to normal view
+                this.disableSelectionMode();
+                await this.viewAlbum(this.currentAlbumId);
+            }
+        }
+        
+        // Download selected photos
+        async downloadSelectedPhotos() {
+            const selectedCheckboxes = document.querySelectorAll('.photo-select-checkbox:checked');
+            
+            if (selectedCheckboxes.length === 0) {
+                this.showMessage('Please select at least one photo to download.');
+                return;
+            }
+            
+            const photoIds = Array.from(selectedCheckboxes).map(cb => cb.dataset.photoId);
+            
+            // Get photo details from the current album
+            const album = await this.albumManager.getAlbumById(this.currentAlbumId);
+            const selectedPhotos = album.photos.filter(photo => photoIds.includes(photo.id));
+            
+            if (selectedPhotos.length === 0) {
+                this.showError('No matching photos found.');
+                return;
+            }
+            
+            // Download each selected photo
+            for (const photo of selectedPhotos) {
+                try {
+                    // Extract filename from the path
+                    const filename = photo.file_name || photo.path.split('/').pop() || `photo_${photo.id}.jpg`;
+                    
+                    // Create download link
+                    const a = document.createElement('a');
+                    a.href = photo.path;
+                    a.download = filename;
+                    document.body.appendChild(a);
+                    a.click();
+                    
+                    // Clean up
+                    setTimeout(() => {
+                        document.body.removeChild(a);
+                    }, 100);
+                    
+                    // Small delay between downloads to avoid overwhelming the browser
+                    await new Promise(resolve => setTimeout(resolve, 200));
+                } catch (error) {
+                    console.error(`Failed to download photo:`, error);
+                    this.showMessage(`Failed to download one or more photos.`);
+                }
+            }
+            
+            if (selectedPhotos.length > 0) {
+                this.showMessage(`Downloaded ${selectedPhotos.length} photo(s)!`);
+            }
+        }
+    }
+
+    // Make app globally available
+    let app;
+
+    // Initialize the app
+    document.addEventListener('DOMContentLoaded', async () => {
+        app = new PhotoAlbumApp();
+        await app.init();
+    });
+  </script>
+</body>
+</html>
+
+<!-- https://simpleguics2pygame.readthedocs.io/en/latest/_static/links/img_links.html -->
+ <!-- For url images to add -->
