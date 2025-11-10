@@ -280,7 +280,8 @@ header h1 {
   padding: 1rem;
   max-width: 1400px;
   margin: 0 auto;
-  padding-bottom: 100px; /* Increased padding to account for footer */
+  padding-bottom: 120px; /* Increased padding to account for footer */
+  min-height: calc(100vh - 200px); /* Ensure content area is at least viewport height minus header and footer */
 }
 
 /* Batch Actions */
@@ -1351,4 +1352,35 @@ footer {
   font-size: 0.8rem;
   display: flex;
   align-items: center;
+}
+
+/* Responsive adjustments for various screen heights to prevent footer overlap */
+@media screen and (max-height: 900px) {
+  .main-content {
+    padding-bottom: 150px; /* More padding for shorter screens */
+  }
+}
+
+@media screen and (max-height: 800px) {
+  .main-content {
+    padding-bottom: 170px; /* Even more padding for shorter screens */
+  }
+}
+
+@media screen and (max-height: 700px) {
+  .main-content {
+    padding-bottom: 190px; /* Even more padding for shorter screens */
+  }
+}
+
+@media screen and (max-height: 600px) {
+  .main-content {
+    padding-bottom: 210px; /* More padding for shorter screens */
+  }
+}
+
+@media screen and (max-height: 500px) {
+  .main-content {
+    padding-bottom: 240px; /* Even more padding for very short screens */
+  }
 }
